@@ -166,6 +166,151 @@ app.get('/api/users/:id', async (c) => {
   }
 })
 
+// Contact Discovery - Upload contacts to find existing members
+app.post('/api/contacts/discover', async (c) => {
+  const { DB } = c.env
+  
+  try {
+    const { contacts } = await c.req.json()
+    
+    if (!contacts || !Array.isArray(contacts)) {
+      return c.json({ error: 'Invalid contacts data' }, 400)
+    }
+    
+    // Extract emails from uploaded contacts
+    const emails = contacts
+      .map(contact => contact.email?.toLowerCase())
+      .filter(email => email && email.includes('@'))
+    
+    if (emails.length === 0) {
+      return c.json({ matches: [], total_contacts: contacts.length, matches_found: 0 })
+    }
+    
+    // Find existing users with matching emails (only public/searchable profiles)
+    const placeholders = emails.map(() => '?').join(',')
+    const matchQuery = `
+      SELECT u.id, u.email, u.name, u.profile_visibility, 
+             CASE WHEN u.score_visibility = 'public' THEN u.network_score ELSE NULL END as network_score,
+             u.successful_connections
+      FROM users u
+      WHERE LOWER(u.email) IN (${placeholders}) 
+        AND u.profile_visibility IN ('public', 'searchable')
+        AND u.email_verified = true
+      ORDER BY u.network_score DESC
+    `
+    
+    const result = await DB.prepare(matchQuery).bind(...emails).all()
+    const matches = result.results || []
+    
+    return c.json({
+      matches,
+      total_contacts: contacts.length,
+      matches_found: matches.length,
+      discovery_summary: {
+        elite_members_found: matches.length,
+        high_scorers: matches.filter(m => m.network_score && m.network_score >= 80).length,
+        verified_professionals: matches.filter(m => m.successful_connections > 0).length
+      }
+    })
+    
+  } catch (error) {
+    console.error('Error in contact discovery:', error)
+    return c.json({ error: 'Failed to process contact discovery' }, 500)
+  }
+})
+
+// Upload and save contacts (for authenticated users)
+app.post('/api/contacts/upload', async (c) => {
+  const { DB } = c.env
+  
+  try {
+    // For demo purposes, we'll simulate authentication
+    // In production, this would verify JWT token
+    const { user_id, contacts } = await c.req.json()
+    
+    if (!user_id || !contacts || !Array.isArray(contacts)) {
+      return c.json({ error: 'Invalid data provided' }, 400)
+    }
+    
+    let processed = 0
+    let errors = 0
+    
+    for (const contact of contacts) {
+      try {
+        // Insert contact
+        const contactResult = await DB.prepare(`
+          INSERT INTO contacts (owner_id, name, email, phone, company, title, notes)
+          VALUES (?, ?, ?, ?, ?, ?, ?)
+        `).bind(
+          user_id,
+          contact.name || '',
+          contact.email || null,
+          contact.phone || null,
+          contact.company || null,
+          contact.title || null,
+          contact.notes || null
+        ).run()
+        
+        processed++
+        
+        // If contact has skills, add them
+        if (contact.skills && Array.isArray(contact.skills)) {
+          for (const skill of contact.skills) {
+            await DB.prepare(`
+              INSERT OR IGNORE INTO contact_skills (contact_id, skill_id, notes)
+              VALUES (?, ?, ?)
+            `).bind(contactResult.meta.last_row_id, skill.skill_id, skill.notes || null).run()
+          }
+        }
+        
+      } catch (contactError) {
+        console.error('Error processing contact:', contactError)
+        errors++
+      }
+    }
+    
+    return c.json({
+      success: true,
+      processed,
+      errors,
+      total: contacts.length
+    })
+    
+  } catch (error) {
+    console.error('Error uploading contacts:', error)
+    return c.json({ error: 'Failed to upload contacts' }, 500)
+  }
+})
+
+// Get user's contacts (authenticated users only)
+app.get('/api/contacts/my-contacts', async (c) => {
+  const { DB } = c.env
+  const userId = c.req.query('user_id') // In production, extract from JWT
+  
+  if (!userId) {
+    return c.json({ error: 'Authentication required' }, 401)
+  }
+  
+  try {
+    const result = await DB.prepare(`
+      SELECT c.*, 
+             GROUP_CONCAT(s.name) as skills
+      FROM contacts c
+      LEFT JOIN contact_skills cs ON c.id = cs.contact_id
+      LEFT JOIN skills s ON cs.skill_id = s.id
+      WHERE c.owner_id = ?
+      GROUP BY c.id
+      ORDER BY c.name
+    `).bind(parseInt(userId)).all()
+    
+    return c.json({ contacts: result.results || [] })
+    
+  } catch (error) {
+    console.error('Error fetching contacts:', error)
+    return c.json({ error: 'Failed to fetch contacts' }, 500)
+  }
+})
+
 // Get leaderboard (top users by score)
 app.get('/api/leaderboard', async (c) => {
   const { DB } = c.env
@@ -264,7 +409,11 @@ app.get('/', (c) => {
                         </h1>
                     </div>
                     <div class="flex items-center space-x-4">
-                        <button id="joinBtn" class="bg-accent text-black px-6 py-2 rounded-lg hover:bg-yellow-400 transition-colors font-semibold">
+                        <button id="discoverBtn" class="bg-accent text-black px-6 py-2 rounded-lg hover:bg-yellow-400 transition-colors font-semibold mr-3">
+                            <i class="fas fa-search-plus mr-2"></i>
+                            Discover Contacts
+                        </button>
+                        <button id="joinBtn" class="bg-gray-800 text-white px-6 py-2 rounded-lg hover:bg-gray-700 transition-colors font-semibold mr-3">
                             <i class="fas fa-crown mr-2"></i>
                             Join Elite
                         </button>

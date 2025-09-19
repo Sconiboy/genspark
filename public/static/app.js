@@ -45,12 +45,14 @@ class PluggdApp {
     }
 
     // Handle authentication buttons
+    const discoverBtn = document.getElementById('discoverBtn')
     const joinBtn = document.getElementById('joinBtn')
     const loginBtn = document.getElementById('loginBtn')
     const getStartedBtn = document.getElementById('getStartedBtn')
     const learnMoreBtn = document.getElementById('learnMoreBtn')
     const finalCTABtn = document.getElementById('finalCTABtn')
 
+    if (discoverBtn) discoverBtn.addEventListener('click', () => this.showContactDiscovery())
     if (joinBtn) joinBtn.addEventListener('click', () => this.showJoinModal())
     if (loginBtn) loginBtn.addEventListener('click', () => this.showLoginModal())
     if (getStartedBtn) getStartedBtn.addEventListener('click', () => this.showJoinModal())
@@ -588,8 +590,416 @@ class PluggdApp {
     document.body.insertAdjacentHTML('beforeend', modalHtml)
   }
 
+  showContactDiscovery() {
+    const modalHtml = `
+      <div id="authModal" class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50 p-4">
+        <div class="bg-gray-900 rounded-xl max-w-3xl w-full border border-gray-700 max-h-[90vh] overflow-y-auto">
+          <div class="p-8">
+            <div class="text-center mb-6">
+              <i class="fas fa-search-plus text-accent text-3xl mb-3"></i>
+              <h3 class="text-2xl font-bold text-white mb-2">Discover Your Elite Network</h3>
+              <p class="text-gray-300">Upload your contacts to see which high-net-worth individuals you already know</p>
+            </div>
+
+            <div id="discoverySteps">
+              <!-- Step 1: Privacy & Permissions -->
+              <div id="step1" class="space-y-6">
+                <div class="bg-black p-6 rounded-lg border border-gray-800">
+                  <h4 class="text-white font-semibold mb-3 flex items-center">
+                    <i class="fas fa-shield-alt text-accent mr-2"></i>
+                    Privacy & Security Guarantee
+                  </h4>
+                  <div class="space-y-3 text-gray-300 text-sm">
+                    <div class="flex items-start">
+                      <i class="fas fa-check text-accent mr-2 mt-1"></i>
+                      <span>Your contacts remain completely private and are never stored permanently</span>
+                    </div>
+                    <div class="flex items-start">
+                      <i class="fas fa-check text-accent mr-2 mt-1"></i>
+                      <span>We only match email addresses with existing elite members</span>
+                    </div>
+                    <div class="flex items-start">
+                      <i class="fas fa-check text-accent mr-2 mt-1"></i>
+                      <span>Contact data is deleted immediately after discovery process</span>
+                    </div>
+                    <div class="flex items-start">
+                      <i class="fas fa-check text-accent mr-2 mt-1"></i>
+                      <span>Only members with public/searchable profiles can be discovered</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="bg-gray-800 p-4 rounded-lg">
+                  <h4 class="text-white font-semibold mb-2">What We'll Show You:</h4>
+                  <ul class="text-gray-300 text-sm space-y-1">
+                    <li>• Elite members already in your network</li>
+                    <li>• Network scores and connection history</li>
+                    <li>• Expertise areas and premium skills</li>
+                    <li>• Potential introduction opportunities</li>
+                  </ul>
+                </div>
+
+                <div class="flex space-x-3">
+                  <button onclick="pluggdApp.showStep2()" class="flex-1 bg-accent text-black py-3 rounded-lg font-bold hover:bg-yellow-400 transition-colors">
+                    <i class="fas fa-arrow-right mr-2"></i>
+                    I Understand, Proceed
+                  </button>
+                  <button onclick="pluggdApp.closeModal()" class="px-6 py-3 border border-gray-600 text-gray-300 rounded-lg hover:bg-gray-800 transition-colors">
+                    Cancel
+                  </button>
+                </div>
+              </div>
+
+              <!-- Step 2: Contact Upload Methods -->
+              <div id="step2" class="space-y-6 hidden">
+                <h4 class="text-white font-semibold mb-4">Choose Contact Upload Method:</h4>
+                
+                <div class="grid md:grid-cols-2 gap-4">
+                  <!-- CSV Upload -->
+                  <div class="bg-black p-6 rounded-lg border border-gray-800 hover:border-accent transition-colors cursor-pointer" onclick="pluggdApp.showCSVUpload()">
+                    <div class="text-center">
+                      <i class="fas fa-file-csv text-accent text-2xl mb-3"></i>
+                      <h5 class="text-white font-semibold mb-2">CSV File Upload</h5>
+                      <p class="text-gray-300 text-sm">Upload a CSV file exported from your phone, email, or CRM</p>
+                    </div>
+                  </div>
+
+                  <!-- Manual Entry -->
+                  <div class="bg-black p-6 rounded-lg border border-gray-800 hover:border-accent transition-colors cursor-pointer" onclick="pluggdApp.showManualEntry()">
+                    <div class="text-center">
+                      <i class="fas fa-keyboard text-accent text-2xl mb-3"></i>
+                      <h5 class="text-white font-semibold mb-2">Manual Entry</h5>
+                      <p class="text-gray-300 text-sm">Manually enter key contacts you want to check</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="text-center">
+                  <button onclick="pluggdApp.showStep1()" class="text-gray-400 hover:text-accent transition-colors">
+                    <i class="fas fa-arrow-left mr-2"></i>
+                    Back to Privacy Info
+                  </button>
+                </div>
+              </div>
+
+              <!-- Step 3: CSV Upload -->
+              <div id="step3" class="space-y-6 hidden">
+                <h4 class="text-white font-semibold mb-4">Upload Contact File</h4>
+                
+                <div class="bg-black p-6 rounded-lg border border-gray-800">
+                  <div class="text-center">
+                    <input type="file" id="csvFileInput" accept=".csv,.txt" class="hidden" onchange="pluggdApp.handleFileUpload(event)">
+                    <div id="uploadArea" class="border-2 border-dashed border-gray-600 rounded-lg p-8 hover:border-accent transition-colors cursor-pointer" onclick="document.getElementById('csvFileInput').click()">
+                      <i class="fas fa-cloud-upload-alt text-accent text-3xl mb-3"></i>
+                      <p class="text-white font-semibold mb-2">Click to upload CSV file</p>
+                      <p class="text-gray-400 text-sm">Supported formats: CSV, TXT with comma separation</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="bg-gray-800 p-4 rounded-lg">
+                  <h5 class="text-white font-semibold mb-2">CSV Format Example:</h5>
+                  <code class="text-gray-300 text-xs block">
+                    Name,Email,Phone,Company<br>
+                    John Doe,john@example.com,555-1234,Tech Corp<br>
+                    Jane Smith,jane@company.com,555-5678,Investment Firm
+                  </code>
+                </div>
+
+                <div class="text-center">
+                  <button onclick="pluggdApp.showStep2()" class="text-gray-400 hover:text-accent transition-colors">
+                    <i class="fas fa-arrow-left mr-2"></i>
+                    Back to Upload Methods
+                  </button>
+                </div>
+              </div>
+
+              <!-- Step 4: Manual Entry -->
+              <div id="step4" class="space-y-6 hidden">
+                <h4 class="text-white font-semibold mb-4">Enter Key Contacts</h4>
+                
+                <div id="manualContacts" class="space-y-4">
+                  <div class="contact-row bg-black p-4 rounded-lg border border-gray-800">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                      <input type="text" placeholder="Full Name" class="px-3 py-2 bg-gray-900 border border-gray-700 rounded text-white placeholder-gray-400 focus:border-accent focus:outline-none">
+                      <input type="email" placeholder="Email Address" class="px-3 py-2 bg-gray-900 border border-gray-700 rounded text-white placeholder-gray-400 focus:border-accent focus:outline-none">
+                      <input type="text" placeholder="Company (optional)" class="px-3 py-2 bg-gray-900 border border-gray-700 rounded text-white placeholder-gray-400 focus:border-accent focus:outline-none">
+                    </div>
+                  </div>
+                </div>
+
+                <div class="flex justify-between items-center">
+                  <button onclick="pluggdApp.addManualContact()" class="text-accent hover:text-yellow-400 transition-colors">
+                    <i class="fas fa-plus mr-2"></i>
+                    Add Another Contact
+                  </button>
+                  <button onclick="pluggdApp.processManualContacts()" class="bg-accent text-black px-6 py-2 rounded-lg font-semibold hover:bg-yellow-400 transition-colors">
+                    <i class="fas fa-search mr-2"></i>
+                    Discover Matches
+                  </button>
+                </div>
+
+                <div class="text-center">
+                  <button onclick="pluggdApp.showStep2()" class="text-gray-400 hover:text-accent transition-colors">
+                    <i class="fas fa-arrow-left mr-2"></i>
+                    Back to Upload Methods
+                  </button>
+                </div>
+              </div>
+
+              <!-- Results -->
+              <div id="discoveryResults" class="hidden">
+                <!-- Results will be populated here -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    `
+    document.body.insertAdjacentHTML('beforeend', modalHtml)
+  }
+
+  showStep1() {
+    document.getElementById('step1').classList.remove('hidden')
+    document.getElementById('step2').classList.add('hidden')
+    document.getElementById('step3').classList.add('hidden')
+    document.getElementById('step4').classList.add('hidden')
+    document.getElementById('discoveryResults').classList.add('hidden')
+  }
+
+  showStep2() {
+    document.getElementById('step1').classList.add('hidden')
+    document.getElementById('step2').classList.remove('hidden')
+    document.getElementById('step3').classList.add('hidden')
+    document.getElementById('step4').classList.add('hidden')
+    document.getElementById('discoveryResults').classList.add('hidden')
+  }
+
+  showCSVUpload() {
+    document.getElementById('step1').classList.add('hidden')
+    document.getElementById('step2').classList.add('hidden')
+    document.getElementById('step3').classList.remove('hidden')
+    document.getElementById('step4').classList.add('hidden')
+    document.getElementById('discoveryResults').classList.add('hidden')
+  }
+
+  showManualEntry() {
+    document.getElementById('step1').classList.add('hidden')
+    document.getElementById('step2').classList.add('hidden')
+    document.getElementById('step3').classList.add('hidden')
+    document.getElementById('step4').classList.remove('hidden')
+    document.getElementById('discoveryResults').classList.add('hidden')
+  }
+
+  addManualContact() {
+    const container = document.getElementById('manualContacts')
+    const contactRow = document.createElement('div')
+    contactRow.className = 'contact-row bg-black p-4 rounded-lg border border-gray-800'
+    contactRow.innerHTML = `
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+        <input type="text" placeholder="Full Name" class="px-3 py-2 bg-gray-900 border border-gray-700 rounded text-white placeholder-gray-400 focus:border-accent focus:outline-none">
+        <input type="email" placeholder="Email Address" class="px-3 py-2 bg-gray-900 border border-gray-700 rounded text-white placeholder-gray-400 focus:border-accent focus:outline-none">
+        <input type="text" placeholder="Company (optional)" class="px-3 py-2 bg-gray-900 border border-gray-700 rounded text-white placeholder-gray-400 focus:border-accent focus:outline-none">
+      </div>
+      <div class="mt-2 text-right">
+        <button onclick="this.parentElement.parentElement.remove()" class="text-red-400 hover:text-red-300 text-sm">
+          <i class="fas fa-trash mr-1"></i>Remove
+        </button>
+      </div>
+    `
+    container.appendChild(contactRow)
+  }
+
+  async processManualContacts() {
+    const contactRows = document.querySelectorAll('.contact-row')
+    const contacts = []
+    
+    contactRows.forEach(row => {
+      const inputs = row.querySelectorAll('input')
+      const name = inputs[0].value.trim()
+      const email = inputs[1].value.trim()
+      const company = inputs[2].value.trim()
+      
+      if (name && email) {
+        contacts.push({ name, email, company })
+      }
+    })
+    
+    if (contacts.length === 0) {
+      this.showNotification('Please enter at least one contact with name and email', 'error')
+      return
+    }
+    
+    await this.performContactDiscovery(contacts)
+  }
+
+  async handleFileUpload(event) {
+    const file = event.target.files[0]
+    if (!file) return
+    
+    try {
+      const text = await file.text()
+      const contacts = this.parseCSV(text)
+      
+      if (contacts.length === 0) {
+        this.showNotification('No valid contacts found in the file', 'error')
+        return
+      }
+      
+      await this.performContactDiscovery(contacts)
+      
+    } catch (error) {
+      console.error('Error reading file:', error)
+      this.showNotification('Error reading file. Please check the format.', 'error')
+    }
+  }
+
+  parseCSV(text) {
+    const lines = text.split('\\n').filter(line => line.trim())
+    const contacts = []
+    
+    // Skip header row if it exists
+    const startIndex = lines[0].toLowerCase().includes('name') ? 1 : 0
+    
+    for (let i = startIndex; i < lines.length; i++) {
+      const parts = lines[i].split(',').map(part => part.trim().replace(/"/g, ''))
+      
+      if (parts.length >= 2) {
+        const contact = {
+          name: parts[0],
+          email: parts[1],
+          phone: parts[2] || '',
+          company: parts[3] || ''
+        }
+        
+        // Validate email format
+        if (contact.email && contact.email.includes('@')) {
+          contacts.push(contact)
+        }
+      }
+    }
+    
+    return contacts
+  }
+
+  async performContactDiscovery(contacts) {
+    try {
+      this.showNotification('Analyzing your network...', 'info')
+      
+      const response = await axios.post(\`\${this.apiBase}/contacts/discover\`, {
+        contacts
+      })
+      
+      const { matches, total_contacts, matches_found, discovery_summary } = response.data
+      
+      this.showDiscoveryResults({
+        matches,
+        total_contacts,
+        matches_found,
+        discovery_summary
+      })
+      
+    } catch (error) {
+      console.error('Contact discovery failed:', error)
+      this.showNotification('Discovery failed. Please try again.', 'error')
+    }
+  }
+
+  showDiscoveryResults(results) {
+    const { matches, total_contacts, matches_found, discovery_summary } = results
+    
+    // Hide all steps
+    document.getElementById('step1').classList.add('hidden')
+    document.getElementById('step2').classList.add('hidden')
+    document.getElementById('step3').classList.add('hidden')
+    document.getElementById('step4').classList.add('hidden')
+    
+    // Show results
+    const resultsDiv = document.getElementById('discoveryResults')
+    resultsDiv.classList.remove('hidden')
+    
+    resultsDiv.innerHTML = \`
+      <div class="space-y-6">
+        <div class="text-center">
+          <i class="fas fa-network-wired text-accent text-3xl mb-3"></i>
+          <h3 class="text-2xl font-bold text-white mb-2">Discovery Complete!</h3>
+          <p class="text-gray-300">Found \${matches_found} elite members in your network</p>
+        </div>
+
+        <!-- Summary Stats -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div class="text-center p-4 bg-black rounded-lg border border-gray-800">
+            <div class="text-2xl font-bold text-accent">\${total_contacts}</div>
+            <div class="text-xs text-gray-400">Contacts Analyzed</div>
+          </div>
+          <div class="text-center p-4 bg-black rounded-lg border border-gray-800">
+            <div class="text-2xl font-bold text-white">\${matches_found}</div>
+            <div class="text-xs text-gray-400">Elite Members Found</div>
+          </div>
+          <div class="text-center p-4 bg-black rounded-lg border border-gray-800">
+            <div class="text-2xl font-bold text-accent">\${discovery_summary.high_scorers}</div>
+            <div class="text-xs text-gray-400">High Scorers (80+)</div>
+          </div>
+          <div class="text-center p-4 bg-black rounded-lg border border-gray-800">
+            <div class="text-2xl font-bold text-white">\${discovery_summary.verified_professionals}</div>
+            <div class="text-xs text-gray-400">Active Connectors</div>
+          </div>
+        </div>
+
+        \${matches.length > 0 ? \`
+          <div>
+            <h4 class="text-white font-semibold mb-4">Elite Members in Your Network:</h4>
+            <div class="space-y-3">
+              \${matches.map(match => \`
+                <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-accent transition-colors">
+                  <div class="flex justify-between items-center">
+                    <div>
+                      <h5 class="text-white font-semibold">\${this.escapeHtml(match.name)}</h5>
+                      <p class="text-gray-400 text-sm">\${this.escapeHtml(match.email)}</p>
+                      <p class="text-gray-300 text-sm">\${match.successful_connections} premium connections</p>
+                    </div>
+                    <div class="text-right">
+                      <div class="text-xl font-bold text-accent">\${match.network_score || 'Private'}</div>
+                      <div class="text-xs text-gray-400">Elite Score</div>
+                    </div>
+                  </div>
+                  <div class="mt-3 flex space-x-2">
+                    <button onclick="pluggdApp.viewUserProfile(\${match.id}); pluggdApp.closeModal()" class="bg-accent text-black px-4 py-2 rounded text-sm font-semibold hover:bg-yellow-400 transition-colors">
+                      View Profile
+                    </button>
+                    <button class="border border-gray-600 text-gray-300 px-4 py-2 rounded text-sm hover:bg-gray-700 transition-colors">
+                      Request Introduction
+                    </button>
+                  </div>
+                </div>
+              \`).join('')}
+            </div>
+          </div>
+        \` : \`
+          <div class="text-center py-8">
+            <i class="fas fa-search text-gray-600 text-4xl mb-4"></i>
+            <p class="text-gray-400">No elite members found in your current contact list.</p>
+            <p class="text-gray-500 text-sm mt-2">Try uploading more contacts or invite high-net-worth contacts to join Plugg'd.</p>
+          </div>
+        \`}
+
+        <div class="text-center space-x-3">
+          <button onclick="pluggdApp.showStep2()" class="bg-gray-800 text-white px-6 py-2 rounded-lg hover:bg-gray-700 transition-colors">
+            <i class="fas fa-redo mr-2"></i>
+            Discover More
+          </button>
+          <button onclick="pluggdApp.closeModal()" class="border border-gray-600 text-gray-300 px-6 py-2 rounded-lg hover:bg-gray-800 transition-colors">
+            Close
+          </button>
+        </div>
+      </div>
+    \`
+    
+    this.showNotification(\`Discovery complete! Found \${matches_found} elite members in your network.\`, 'success')
+  }
+
   closeModal() {
-    const modal = document.getElementById('authModal')
+    const modal = document.getElementById('authModal') || document.getElementById('userModal')
     if (modal) {
       modal.remove()
     }

@@ -1,21 +1,21 @@
-/* NetworkConnect Custom Styles */
+/* Plugg'd Custom Styles - Premium Dark Theme */
 
-/* Custom scrollbar */
+/* Custom scrollbar - Dark Theme */
 ::-webkit-scrollbar {
   width: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #f1f5f9;
+  background: #111827;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
+  background: #374151;
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
+  background: #ffd700;
 }
 
 /* Smooth transitions */
@@ -31,13 +31,17 @@
   overflow: hidden;
 }
 
-/* Custom gradient backgrounds */
+/* Custom gradient backgrounds - Premium */
 .gradient-primary {
-  background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
+  background: linear-gradient(135deg, #000000 0%, #1f2937 100%);
 }
 
 .gradient-secondary {
-  background: linear-gradient(135deg, #7c3aed 0%, #f59e0b 100%);
+  background: linear-gradient(135deg, #1f2937 0%, #ffd700 100%);
+}
+
+.gradient-gold {
+  background: linear-gradient(135deg, #ffd700 0%, #f59e0b 100%);
 }
 
 /* Hover effects */
@@ -81,17 +85,21 @@
   }
 }
 
-/* Button variations */
+/* Button variations - Premium */
 .btn-primary {
-  @apply bg-blue-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors;
+  @apply bg-yellow-400 text-black px-6 py-3 rounded-lg font-semibold hover:bg-yellow-300 transition-colors;
 }
 
 .btn-secondary {
-  @apply bg-purple-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-purple-700 transition-colors;
+  @apply bg-gray-800 text-white px-6 py-3 rounded-lg font-semibold hover:bg-gray-700 transition-colors;
 }
 
 .btn-outline {
-  @apply border-2 border-blue-600 text-blue-600 px-4 py-2 rounded-lg font-medium hover:bg-blue-600 hover:text-white transition-colors;
+  @apply border-2 border-yellow-400 text-yellow-400 px-6 py-3 rounded-lg font-semibold hover:bg-yellow-400 hover:text-black transition-colors;
+}
+
+.btn-elite {
+  @apply bg-gradient-gold text-black px-8 py-4 rounded-lg font-bold hover:shadow-lg hover:scale-105 transition-all;
 }
 
 /* Modal animations */

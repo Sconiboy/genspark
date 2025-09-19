@@ -229,7 +229,7 @@ app.get('/', (c) => {
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>NetworkConnect - Monetize Your Professional Network</title>
+        <title>Plugg'd - Premium Professional Network</title>
         <script src="https://cdn.tailwindcss.com"></script>
         <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
         <script>
@@ -237,9 +237,14 @@ app.get('/', (c) => {
             theme: {
               extend: {
                 colors: {
-                  primary: '#2563eb',
-                  secondary: '#7c3aed',
-                  accent: '#f59e0b'
+                  primary: '#000000',
+                  secondary: '#1a1a1a',
+                  accent: '#ffd700',
+                  gray: {
+                    850: '#1f2937',
+                    900: '#111827',
+                    950: '#0f172a'
+                  }
                 }
               }
             }
@@ -247,24 +252,24 @@ app.get('/', (c) => {
         </script>
         <link href="/static/style.css" rel="stylesheet">
     </head>
-    <body class="bg-gray-50">
+    <body class="bg-black text-white">
         <!-- Navigation -->
-        <nav class="bg-white shadow-sm border-b">
+        <nav class="bg-black border-b border-gray-800">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex justify-between items-center h-16">
                     <div class="flex items-center">
-                        <h1 class="text-2xl font-bold text-primary">
-                            <i class="fas fa-network-wired mr-2"></i>
-                            NetworkConnect
+                        <h1 class="text-2xl font-bold text-white">
+                            <i class="fas fa-plug mr-2 text-accent"></i>
+                            Plugg'd
                         </h1>
                     </div>
                     <div class="flex items-center space-x-4">
-                        <button class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
-                            <i class="fas fa-user-plus mr-2"></i>
-                            Join Platform
+                        <button id="joinBtn" class="bg-accent text-black px-6 py-2 rounded-lg hover:bg-yellow-400 transition-colors font-semibold">
+                            <i class="fas fa-crown mr-2"></i>
+                            Join Elite
                         </button>
-                        <button class="text-gray-600 hover:text-primary transition-colors">
-                            <i class="fas fa-sign-in-alt mr-2"></i>
+                        <button id="loginBtn" class="text-white hover:text-accent transition-colors px-4 py-2">
+                            <i class="fas fa-key mr-2"></i>
                             Login
                         </button>
                     </div>
@@ -273,22 +278,22 @@ app.get('/', (c) => {
         </nav>
 
         <!-- Hero Section -->
-        <div class="bg-gradient-to-br from-primary to-secondary text-white py-20">
+        <div class="bg-gradient-to-br from-gray-900 to-black text-white py-20 border-b border-gray-800">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
                 <h2 class="text-5xl font-bold mb-6">
-                    Monetize Your Professional Network
+                    <span class="text-accent">Premium</span> Professional Connections
                 </h2>
                 <p class="text-xl mb-8 max-w-3xl mx-auto opacity-90">
-                    Connect people with the right expertise while keeping your contacts private. 
-                    Earn money for successful introductions and build your network score.
+                    Exclusive access to high-net-worth professionals. Monetize your elite network 
+                    while maintaining complete privacy and discretion.
                 </p>
                 <div class="flex justify-center space-x-4">
-                    <button class="bg-white text-primary px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
-                        <i class="fas fa-rocket mr-2"></i>
-                        Get Started
+                    <button id="getStartedBtn" class="bg-accent text-black px-8 py-4 rounded-lg font-bold hover:bg-yellow-400 transition-colors text-lg">
+                        <i class="fas fa-diamond mr-2"></i>
+                        Request Access
                     </button>
-                    <button class="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-primary transition-colors">
-                        <i class="fas fa-play mr-2"></i>
+                    <button id="learnMoreBtn" class="border-2 border-accent text-accent px-8 py-4 rounded-lg font-bold hover:bg-accent hover:text-black transition-colors text-lg">
+                        <i class="fas fa-info-circle mr-2"></i>
                         Learn More
                     </button>
                 </div>
@@ -296,48 +301,48 @@ app.get('/', (c) => {
         </div>
 
         <!-- Features Section -->
-        <div class="py-20 bg-white">
+        <div class="py-20 bg-gray-900">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="text-center mb-16">
-                    <h3 class="text-3xl font-bold text-gray-900 mb-4">
-                        How NetworkConnect Works
+                    <h3 class="text-3xl font-bold text-white mb-4">
+                        How Plugg'd Works
                     </h3>
-                    <p class="text-xl text-gray-600 max-w-2xl mx-auto">
-                        A private, gamified networking platform that rewards valuable connections
+                    <p class="text-xl text-gray-300 max-w-2xl mx-auto">
+                        Elite networking platform for high-net-worth professionals
                     </p>
                 </div>
 
                 <div class="grid md:grid-cols-3 gap-8">
                     <!-- Feature 1 -->
-                    <div class="text-center p-6 rounded-xl bg-gray-50 hover:shadow-lg transition-shadow">
-                        <div class="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-4">
-                            <i class="fas fa-shield-alt text-white text-2xl"></i>
+                    <div class="text-center p-8 rounded-xl bg-black border border-gray-800 hover:border-accent transition-all">
+                        <div class="w-16 h-16 bg-accent rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-user-secret text-black text-2xl"></i>
                         </div>
-                        <h4 class="text-xl font-semibold mb-3">Private Contacts</h4>
-                        <p class="text-gray-600">
-                            Your contact list stays completely private. Unlike LinkedIn, only you can see your connections.
+                        <h4 class="text-xl font-semibold mb-3 text-white">Ultimate Discretion</h4>
+                        <p class="text-gray-300">
+                            Your network remains completely confidential. Premium privacy for elite professionals.
                         </p>
                     </div>
 
                     <!-- Feature 2 -->
-                    <div class="text-center p-6 rounded-xl bg-gray-50 hover:shadow-lg transition-shadow">
-                        <div class="w-16 h-16 bg-secondary rounded-full flex items-center justify-center mx-auto mb-4">
-                            <i class="fas fa-handshake text-white text-2xl"></i>
+                    <div class="text-center p-8 rounded-xl bg-black border border-gray-800 hover:border-accent transition-all">
+                        <div class="w-16 h-16 bg-accent rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-crown text-black text-2xl"></i>
                         </div>
-                        <h4 class="text-xl font-semibold mb-3">Mutual Approval</h4>
-                        <p class="text-gray-600">
-                            Both parties must approve before any introduction is made, ensuring quality connections.
+                        <h4 class="text-xl font-semibold mb-3 text-white">Curated Network</h4>
+                        <p class="text-gray-300">
+                            Exclusive access to verified high-net-worth individuals and industry leaders.
                         </p>
                     </div>
 
                     <!-- Feature 3 -->
-                    <div class="text-center p-6 rounded-xl bg-gray-50 hover:shadow-lg transition-shadow">
+                    <div class="text-center p-8 rounded-xl bg-black border border-gray-800 hover:border-accent transition-all">
                         <div class="w-16 h-16 bg-accent rounded-full flex items-center justify-center mx-auto mb-4">
-                            <i class="fas fa-coins text-white text-2xl"></i>
+                            <i class="fas fa-gem text-black text-2xl"></i>
                         </div>
-                        <h4 class="text-xl font-semibold mb-3">Earn Money</h4>
-                        <p class="text-gray-600">
-                            Set your own fees for introductions. Get paid when connections lead to successful business.
+                        <h4 class="text-xl font-semibold mb-3 text-white">Premium Rewards</h4>
+                        <p class="text-gray-300">
+                            Monetize your valuable connections with premium fees and exclusive opportunities.
                         </p>
                     </div>
                 </div>
@@ -345,35 +350,35 @@ app.get('/', (c) => {
         </div>
 
         <!-- Live Demo Section -->
-        <div class="py-20 bg-gray-50">
+        <div class="py-20 bg-black border-t border-gray-800">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="text-center mb-12">
-                    <h3 class="text-3xl font-bold text-gray-900 mb-4">
-                        Explore the Network
+                    <h3 class="text-3xl font-bold text-white mb-4">
+                        Elite Network Preview
                     </h3>
-                    <p class="text-xl text-gray-600">
-                        Search for expertise and see how our scoring system works
+                    <p class="text-xl text-gray-300">
+                        Preview our exclusive network of verified professionals
                     </p>
                 </div>
 
                 <div id="app" class="space-y-8">
                     <!-- Search Interface -->
-                    <div class="bg-white rounded-xl p-6 shadow-sm">
+                    <div class="bg-gray-900 rounded-xl p-6 border border-gray-800">
                         <div class="flex flex-col md:flex-row gap-4 mb-6">
                             <div class="flex-1">
                                 <input 
                                     type="text" 
                                     id="searchQuery"
-                                    placeholder="Search for expertise..." 
-                                    class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                                    placeholder="Search elite professionals..." 
+                                    class="w-full px-4 py-3 bg-black border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent text-white placeholder-gray-400"
                                 >
                             </div>
-                            <select id="categoryFilter" class="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
+                            <select id="categoryFilter" class="px-4 py-3 bg-black border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent text-white">
                                 <option value="">All Categories</option>
                             </select>
                             <button 
                                 id="searchBtn"
-                                class="bg-primary text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+                                class="bg-accent text-black px-6 py-3 rounded-lg hover:bg-yellow-400 transition-colors font-semibold"
                             >
                                 <i class="fas fa-search mr-2"></i>
                                 Search
@@ -387,8 +392,8 @@ app.get('/', (c) => {
                     </div>
 
                     <!-- Stats -->
-                    <div id="platformStats" class="bg-white rounded-xl p-6 shadow-sm">
-                        <h4 class="text-xl font-semibold mb-4">Platform Statistics</h4>
+                    <div id="platformStats" class="bg-gray-900 rounded-xl p-6 border border-gray-800">
+                        <h4 class="text-xl font-semibold mb-4 text-white">Elite Network Stats</h4>
                         <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                             <!-- Stats will be populated here -->
                         </div>
@@ -398,17 +403,17 @@ app.get('/', (c) => {
         </div>
 
         <!-- CTA Section -->
-        <div class="py-20 bg-primary text-white">
+        <div class="py-20 bg-gradient-to-r from-gray-900 to-black text-white border-t border-gray-800">
             <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
                 <h3 class="text-4xl font-bold mb-6">
-                    Ready to Monetize Your Network?
+                    Ready to Join the <span class="text-accent">Elite</span>?
                 </h3>
                 <p class="text-xl mb-8 opacity-90">
-                    Join successful professionals who are earning money from their connections
+                    Exclusive access to high-net-worth professionals and premium opportunities
                 </p>
-                <button class="bg-white text-primary px-8 py-4 rounded-lg font-semibold text-lg hover:bg-gray-100 transition-colors">
-                    <i class="fas fa-user-plus mr-2"></i>
-                    Start Building Your Network Score
+                <button id="finalCTABtn" class="bg-accent text-black px-12 py-4 rounded-lg font-bold text-lg hover:bg-yellow-400 transition-colors">
+                    <i class="fas fa-diamond mr-2"></i>
+                    Request Elite Access
                 </button>
             </div>
         </div>

@@ -1,5 +1,5 @@
 {
-  "name": "webapp",
+  "name": "pluggd-app",
   "type": "module",
   "scripts": {
     "dev": "vite",
